@@ -1,0 +1,37 @@
+body {
+    background-color: #334552;
+}
+
+#keyboard {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.key {
+    cursor: pointer;
+    font: 16px "Open Sans", "Lucida Grande", "Arial", sans-serif;
+    border: 1px solid black;
+    border-radius: 5px;
+    width: 80px;
+    height: 320px;
+    text-align: center;
+    box-shadow: 5px 5px #2b4056;
+    display: inline-block;
+    position: relative;
+    margin: 5px;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.key:hover {
+    border-color: #74571e;
+}
+
+.key:active {
+    background-color: #112956;
+}
