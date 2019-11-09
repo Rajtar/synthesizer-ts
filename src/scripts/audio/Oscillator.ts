@@ -5,7 +5,6 @@ export class Oscillator {
     private readonly volume: number;
     private readonly samplingRate: number;
 
-
     constructor(waveType: WaveType, volume: number, samplingRate: number) {
         this.waveType = waveType;
         this.volume = volume;

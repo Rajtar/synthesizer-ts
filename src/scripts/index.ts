@@ -1,11 +1,10 @@
-import {NoteTable} from "./audio/NoteTable";
 import {Oscillator} from "./audio/Oscillator";
 import {WaveType} from "./audio/WaveType";
+import {KeyboardManager} from "./ui/KeyboardManager";
 
 const audioContext = new AudioContext();
 const sineOscillator = new Oscillator(WaveType.Sine, 0.5, audioContext.sampleRate);
 let source: AudioBufferSourceNode;
-
 
 function play(event: InputEvent): void {
     const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
@@ -22,27 +21,14 @@ function stopPlaying(): void {
     source.stop();
 }
 
-function createKey(noteFrequency: number): HTMLElement {
-    console.log("Create key for: " + noteFrequency);
-    const keyElement = document.createElement("div");
-    keyElement.className = "key";
-    keyElement.dataset["noteFrequency"] = String(noteFrequency);
-    keyElement.addEventListener("mousedown", play, false);
-    keyElement.addEventListener("mouseup", stopPlaying, false);
-    // keyElement.addEventListener("mouseover", play, false);
-    keyElement.addEventListener("mouseleave", stopPlaying, false);
-    return keyElement;
-}
-
-function createKeyboard(): void {
-    const keyboardDiv = document.getElementById("keyboard");
-    for (const noteFrequency of NoteTable.frequencies) {
-        keyboardDiv.appendChild(createKey(noteFrequency));
-    }
-}
-
 function initialize(): void {
-    createKeyboard();
+    const keyboardDiv = KeyboardManager.createKeyboard();
+    const keys = keyboardDiv.getElementsByTagName("*");
+    for (const key of keys) {
+        key.addEventListener("mousedown", play, false);
+        key.addEventListener("mouseup", stopPlaying, false);
+        key.addEventListener("mouseleave", stopPlaying, false);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", initialize);
