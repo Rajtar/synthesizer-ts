@@ -1,26 +1,17 @@
-import {NoteTable} from "./NoteTable";
+import {NoteTable} from "./audio/NoteTable";
+import {Oscillator} from "./audio/Oscillator";
+import {WaveType} from "./audio/WaveType";
 
 const audioContext = new AudioContext();
+const sineOscillator = new Oscillator(WaveType.Sine, 0.5, audioContext.sampleRate);
 let source: AudioBufferSourceNode;
 
-function sineWaveAt(sampleNumber: number, tone: number): number {
-    const sampleFrequency = audioContext.sampleRate / tone;
-    return Math.sin(sampleNumber / (sampleFrequency / (Math.PI*2)))
-}
 
 function play(event: InputEvent): void {
-    const volume = 0.5;
-    const seconds = 3;
     const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
-    const samples = new Float32Array(audioContext.sampleRate * seconds);
-
-    for (let i = 0; i < samples.length; i++) {
-        samples[i] = sineWaveAt(i, +tone) * volume
-    }
-
+    const samples = sineOscillator.generateAudioBuffer(+tone, 3);
     const audioBuffer = audioContext.createBuffer(1, samples.length, audioContext.sampleRate);
     audioBuffer.copyToChannel(samples, 0);
-
     source = audioContext.createBufferSource();
     source.buffer = audioBuffer;
     source.connect(audioContext.destination);
