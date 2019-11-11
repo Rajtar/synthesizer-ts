@@ -45,6 +45,7 @@ export class Oscillator {
     }
 
     private sawToothWaveAt(sampleNumber: number, tone: number): number {
-        return Math.random() * 2 - 1;
+        const cot = 1 / Math.tan(Math.PI * tone * sampleNumber * (1 / this.samplingRate));
+        return -Math.atan(cot);
     }
 }

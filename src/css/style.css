@@ -19,7 +19,7 @@ body {
     width: 80px;
     height: 320px;
     text-align: center;
-    box-shadow: 5px 5px #2b4056;
+    box-shadow: 5px 5px rgba(0, 0, 0, 0.1);
     display: inline-block;
     position: relative;
     margin: 5px;
@@ -34,5 +34,5 @@ body {
 }
 
 .key:active {
-    background-color: #112956;
+    background-color: rgba(0, 0, 0, 0.5);
 }
