@@ -8,30 +8,35 @@
 </head>
 <body>
 <div id="controls">
-
-    <label class="container">Sine
+    <label class="radio-container">Sine
         <input type="radio" name="wave" id="sineRadio" checked="checked">
-        <span class="checkmark"></span>
+        <span class="radio-checkmark"></span>
     </label>
-    <label class="container">Square
+    <label class="radio-container">Square
         <input type="radio" name="wave" id="squareRadio">
-        <span class="checkmark"></span>
+        <span class="radio-checkmark"></span>
     </label>
-    <label class="container">Triangle
+    <label class="radio-container">Triangle
         <input type="radio" name="wave" id="triangleRadio">
-        <span class="checkmark"></span>
+        <span class="radio-checkmark"></span>
     </label>
-    <label class="container">Sawtooth
+    <label class="radio-container">Sawtooth
         <input type="radio" name="wave" id="sawtoothRadio">
-        <span class="checkmark"></span>
+        <span class="radio-checkmark"></span>
     </label>
+
+    <label class="checkbox-container">VCF Enabled
+        <input type="checkbox" checked="checked" id="filterEnabledCheckbox">
+        <span class="checkbox-checkmark"></span>
+    </label>
+
     <div class="slidecontainer">
-        VFC Cutoff
+        VCF Cutoff
         <input type="range" min="1" max="1000" value="500" class="slider" id="cutoffSlider">
         <span id="cutoffSliderLabel">500 Hz</span>
     </div>
     <div class="slidecontainer">
-        VFC Resonance
+        VCF Resonance
         <input type="range" min="1" max="100" value="1" class="slider" id="resonanceSlider">
         <span id="resonanceSliderLabel">1</span>
     </div>

@@ -7,6 +7,7 @@ import {LowPassFilter} from "./audio/LowPassFilter";
 const audioContext = new AudioContext();
 const oscillator = new Oscillator(WaveType.Sine, 0.3, audioContext.sampleRate);
 const lowPassFilter = new LowPassFilter(audioContext.sampleRate);
+let filterEnabled = true;
 let filterCutoff = 500;
 let filterResonance = 1;
 let source: AudioBufferSourceNode;
@@ -15,7 +16,9 @@ let waveChartManager: WaveChartManager;
 function play(event: InputEvent): void {
     const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
     let samples = oscillator.generateAudioBuffer(+tone, 3);
-    samples = lowPassFilter.filter(samples, filterCutoff, filterResonance);
+    if (filterEnabled) {
+        samples = lowPassFilter.filter(samples, filterCutoff, filterResonance);
+    }
     const audioBuffer = audioContext.createBuffer(1, samples.length, audioContext.sampleRate);
     audioBuffer.copyToChannel(samples, 0);
     source = audioContext.createBufferSource();
@@ -49,6 +52,9 @@ function initialize(): void {
     });
     document.getElementById("sawtoothRadio").addEventListener("change", function () {
         oscillator.waveType = WaveType.Sawtooth;
+    });
+    document.getElementById("filterEnabledCheckbox").addEventListener("click", function () {
+        filterEnabled = !filterEnabled;
     });
     document.getElementById("cutoffSlider").oninput = function () {
         // @ts-ignore
