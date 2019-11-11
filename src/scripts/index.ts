@@ -7,7 +7,7 @@ import {LowPassFilter} from "./audio/LowPassFilter";
 const audioContext = new AudioContext();
 const oscillator = new Oscillator(WaveType.Sine, 0.3, audioContext.sampleRate);
 const lowPassFilter = new LowPassFilter(audioContext.sampleRate);
-let filterEnabled = true;
+let filterEnabled = false;
 let filterCutoff = 500;
 let filterResonance = 1;
 let source: AudioBufferSourceNode;
