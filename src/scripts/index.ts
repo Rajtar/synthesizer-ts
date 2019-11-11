@@ -4,7 +4,7 @@ import {KeyboardManager} from "./ui/KeyboardManager";
 import {WaveChartManager} from "./ui/WaveChartManager";
 
 const audioContext = new AudioContext();
-const oscillator = new Oscillator(WaveType.Square, 0.5, audioContext.sampleRate);
+const oscillator = new Oscillator(WaveType.Triangle, 0.5, audioContext.sampleRate);
 let source: AudioBufferSourceNode;
 let waveChartManager: WaveChartManager;
 

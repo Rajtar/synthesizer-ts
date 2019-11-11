@@ -41,7 +41,7 @@ export class Oscillator {
     }
 
     private triangleWaveAt(sampleNumber: number, tone: number): number {
-        return Math.random() * 2 - 1;
+        return Math.asin(this.sineWaveAt(sampleNumber, tone));
     }
 
     private sawToothWaveAt(sampleNumber: number, tone: number): number {

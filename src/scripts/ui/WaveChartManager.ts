@@ -24,6 +24,9 @@ export class WaveChartManager {
                 labels: Array.from(Array(1000).keys()).map(String)
             },
             options: {
+                legend: {
+                    display: false
+                },
                 animation: {
                     duration: 0
                 },
