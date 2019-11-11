@@ -14,13 +14,37 @@ export class Oscillator {
     generateAudioBuffer(tone: number, seconds: number): Float32Array {
         const samples = new Float32Array(this.samplingRate * seconds);
         for (let i = 0; i < samples.length; i++) {
-            samples[i] = this.sineWaveAt(i, +tone) * this.volume;
+            switch (this.waveType) {
+                case WaveType.Sine:
+                    samples[i] = this.sineWaveAt(i, +tone) * this.volume;
+                    break;
+                case WaveType.Square:
+                    samples[i] = this.squareWaveAt(i, +tone) * this.volume;
+                    break;
+                case WaveType.Triangle:
+                    samples[i] = this.triangleWaveAt(i, +tone) * this.volume;
+                    break;
+                case WaveType.Sawtooth:
+                    samples[i] = this.sawToothWaveAt(i, +tone) * this.volume;
+                    break;
+            }
         }
         return samples;
     }
 
     private sineWaveAt(sampleNumber: number, tone: number): number {
-        const sampleFrequency = this.samplingRate / tone;
-        return Math.sin(sampleNumber / (sampleFrequency / (Math.PI*2)))
+        return Math.sin(2 * Math.PI * tone * sampleNumber * (1 / this.samplingRate));
+    }
+
+    private squareWaveAt(sampleNumber: number, tone: number): number {
+        return Math.sign(this.sineWaveAt(sampleNumber, tone));
+    }
+
+    private triangleWaveAt(sampleNumber: number, tone: number): number {
+        return Math.random() * 2 - 1;
+    }
+
+    private sawToothWaveAt(sampleNumber: number, tone: number): number {
+        return Math.random() * 2 - 1;
     }
 }

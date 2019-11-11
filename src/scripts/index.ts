@@ -1,20 +1,23 @@
 import {Oscillator} from "./audio/Oscillator";
 import {WaveType} from "./audio/WaveType";
 import {KeyboardManager} from "./ui/KeyboardManager";
+import {WaveChartManager} from "./ui/WaveChartManager";
 
 const audioContext = new AudioContext();
-const sineOscillator = new Oscillator(WaveType.Sine, 0.5, audioContext.sampleRate);
+const oscillator = new Oscillator(WaveType.Square, 0.5, audioContext.sampleRate);
 let source: AudioBufferSourceNode;
+let waveChartManager: WaveChartManager;
 
 function play(event: InputEvent): void {
     const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
-    const samples = sineOscillator.generateAudioBuffer(+tone, 3);
+    const samples = oscillator.generateAudioBuffer(+tone, 3);
     const audioBuffer = audioContext.createBuffer(1, samples.length, audioContext.sampleRate);
     audioBuffer.copyToChannel(samples, 0);
     source = audioContext.createBufferSource();
     source.buffer = audioBuffer;
     source.connect(audioContext.destination);
     source.start();
+    waveChartManager.updateChart(samples);
 }
 
 function stopPlaying(): void {
@@ -22,6 +25,7 @@ function stopPlaying(): void {
 }
 
 function initialize(): void {
+    waveChartManager = new WaveChartManager((<HTMLCanvasElement>document.getElementById('waveChart')));
     const keyboardDiv = KeyboardManager.createKeyboard();
     const keys = keyboardDiv.getElementsByTagName("*");
     for (const key of keys) {
