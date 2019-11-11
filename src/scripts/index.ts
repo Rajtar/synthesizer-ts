@@ -2,15 +2,20 @@ import {Oscillator} from "./audio/Oscillator";
 import {WaveType} from "./audio/WaveType";
 import {KeyboardManager} from "./ui/KeyboardManager";
 import {WaveChartManager} from "./ui/WaveChartManager";
+import {LowPassFilter} from "./audio/LowPassFilter";
 
 const audioContext = new AudioContext();
-const oscillator = new Oscillator(WaveType.Sawtooth, 0.5, audioContext.sampleRate);
+const oscillator = new Oscillator(WaveType.Sine, 0.3, audioContext.sampleRate);
+const lowPassFilter = new LowPassFilter(audioContext.sampleRate);
+let filterCutoff = 500;
+let filterResonance = 1;
 let source: AudioBufferSourceNode;
 let waveChartManager: WaveChartManager;
 
 function play(event: InputEvent): void {
     const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
-    const samples = oscillator.generateAudioBuffer(+tone, 3);
+    let samples = oscillator.generateAudioBuffer(+tone, 3);
+    samples = lowPassFilter.filter(samples, filterCutoff, filterResonance);
     const audioBuffer = audioContext.createBuffer(1, samples.length, audioContext.sampleRate);
     audioBuffer.copyToChannel(samples, 0);
     source = audioContext.createBufferSource();
@@ -32,6 +37,30 @@ function initialize(): void {
         key.addEventListener("mousedown", play, false);
         key.addEventListener("mouseup", stopPlaying, false);
         key.addEventListener("mouseleave", stopPlaying, false);
+    }
+    document.getElementById("sineRadio").addEventListener("change", function () {
+        oscillator.waveType = WaveType.Sine;
+    });
+    document.getElementById("squareRadio").addEventListener("change", function () {
+        oscillator.waveType = WaveType.Square;
+    });
+    document.getElementById("triangleRadio").addEventListener("change", function () {
+        oscillator.waveType = WaveType.Triangle;
+    });
+    document.getElementById("sawtoothRadio").addEventListener("change", function () {
+        oscillator.waveType = WaveType.Sawtooth;
+    });
+    document.getElementById("cutoffSlider").oninput = function () {
+        // @ts-ignore
+        filterCutoff = this.value;
+        // @ts-ignore
+        (<HTMLInputElement>document.getElementById("cutoffSliderLabel")).innerHTML = this.value + " Hz";
+    }
+    document.getElementById("resonanceSlider").oninput = function () {
+        // @ts-ignore
+        filterResonance = this.value;
+        // @ts-ignore
+        (<HTMLInputElement>document.getElementById("resonanceSliderLabel")).innerHTML = this.value;
     }
 }
 

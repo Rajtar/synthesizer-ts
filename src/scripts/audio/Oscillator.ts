@@ -1,7 +1,7 @@
 import {WaveType} from "./WaveType";
 
 export class Oscillator {
-    private readonly waveType: WaveType;
+    waveType: WaveType;
     private readonly volume: number;
     private readonly samplingRate: number;
 

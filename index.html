@@ -7,7 +7,36 @@
     <script src="dist/bundle.js"></script>
 </head>
 <body>
-    <canvas id="waveChart" width="1024" height="576"></canvas>
-    <div id="keyboard"></div>
+<div id="controls">
+
+    <label class="container">Sine
+        <input type="radio" name="wave" id="sineRadio" checked="checked">
+        <span class="checkmark"></span>
+    </label>
+    <label class="container">Square
+        <input type="radio" name="wave" id="squareRadio">
+        <span class="checkmark"></span>
+    </label>
+    <label class="container">Triangle
+        <input type="radio" name="wave" id="triangleRadio">
+        <span class="checkmark"></span>
+    </label>
+    <label class="container">Sawtooth
+        <input type="radio" name="wave" id="sawtoothRadio">
+        <span class="checkmark"></span>
+    </label>
+    <div class="slidecontainer">
+        VFC Cutoff
+        <input type="range" min="1" max="1000" value="500" class="slider" id="cutoffSlider">
+        <span id="cutoffSliderLabel">500 Hz</span>
+    </div>
+    <div class="slidecontainer">
+        VFC Resonance
+        <input type="range" min="1" max="100" value="1" class="slider" id="resonanceSlider">
+        <span id="resonanceSliderLabel">1</span>
+    </div>
+</div>
+<canvas id="waveChart" width="1024" height="576"></canvas>
+<div id="keyboard"></div>
 </body>
 </html>
