@@ -6,8 +6,6 @@ import {WaveChartManager} from "./ui/WaveChartManager";
 import {LowPassFilter} from "./audio/LowPassFilter";
 import {EnvelopeStage} from "./audio/EnvelopeStage";
 
-const audioContext = new AudioContext();
-
 import {RocketEffect} from "./audio/RocketEffect";
 import {BufferPlayer} from "./audio/BufferPlayer";
 
@@ -26,7 +24,7 @@ function createAudioScene(): void {
     oscillator = new Oscillator(WaveType.Sine, 0.3, bufferPlayer.getSamplingRate());
     lowPassFilter = new LowPassFilter(bufferPlayer.getSamplingRate());
     rocketEffect = new RocketEffect(bufferPlayer.getSamplingRate());
-    envelopeGenerator = new EnvelopeGenerator(audioContext.sampleRate);
+    envelopeGenerator = new EnvelopeGenerator(bufferPlayer.getSamplingRate());
 }
 
 function playTone(event: InputEvent): void {
@@ -38,10 +36,10 @@ function playTone(event: InputEvent): void {
     //     envelopeGenerator.enterStage(EnvelopeStage.Release);
     // }
 
-    this.envelopeGenerator.enterStage(EnvelopeStage.Attack);
-    for (const i in samples) {
-        samples[i] *= envelopeGenerator.nextSample();
-    }
+    // this.envelopeGenerator.enterStage(EnvelopeStage.Attack);
+    // for (const i in samples) {
+    //     samples[i] *= envelopeGenerator.nextSample();
+    // }
 
     if (filterEnabled) {
         samples = lowPassFilter.filter(samples, filterCutoff, filterResonance);
@@ -50,14 +48,14 @@ function playTone(event: InputEvent): void {
 }
 
 function stopPlayingTone(): void {
-    if (envelopeGenerator.CurrentStage != EnvelopeStage.Off && envelopeGenerator.CurrentStage != EnvelopeStage.Release) {
-        envelopeGenerator.enterStage(EnvelopeStage.Release);
-    }
+    // if (envelopeGenerator.CurrentStage != EnvelopeStage.Off && envelopeGenerator.CurrentStage != EnvelopeStage.Release) {
+    //     envelopeGenerator.enterStage(EnvelopeStage.Release);
+    // }
     bufferPlayer.stopPlaying();
 }
 
 function playEffect(): void {
-    const samples = rocketEffect.play(1.5);
+    const samples = rocketEffect.play(5);
     bufferPlayer.playBuffer(samples);
 }
 
