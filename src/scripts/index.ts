@@ -4,7 +4,6 @@ import {WaveType} from "./audio/WaveType";
 import {KeyboardManager} from "./ui/KeyboardManager";
 import {WaveChartManager} from "./ui/WaveChartManager";
 import {LowPassFilter} from "./audio/LowPassFilter";
-import {EnvelopeStage} from "./audio/EnvelopeStage";
 
 import {RocketEffect} from "./audio/RocketEffect";
 import {BufferPlayer} from "./audio/BufferPlayer";
