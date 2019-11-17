@@ -12,7 +12,7 @@ export class KeyboardManager {
 
     static createKey(noteKey: string): HTMLElement {
         const keyElement = document.createElement("div");
-        keyElement.className = "key";
+        keyElement.className = noteKey.includes("#") ? "half-key" : "key";
         keyElement.dataset["noteKey"] = String(noteKey);
         return keyElement;
     }
