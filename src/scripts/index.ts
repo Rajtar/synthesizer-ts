@@ -4,23 +4,19 @@ import {KeyboardManager} from "./ui/KeyboardManager";
 import {WaveChartManager} from "./ui/WaveChartManager";
 import {LowPassFilter} from "./audio/LowPassFilter";
 import {RedNoiseGenerator} from "./audio/RedNoiseGenerator";
+import {RocketEffect} from "./audio/RocketEffect";
 
 const audioContext = new AudioContext();
 const oscillator = new Oscillator(WaveType.Sine, 0.3, audioContext.sampleRate);
 const lowPassFilter = new LowPassFilter(audioContext.sampleRate);
-const noiseGenerator = new RedNoiseGenerator(audioContext.sampleRate);
+const rocketEffect = new RocketEffect(audioContext.sampleRate);
 let filterEnabled = false;
 let filterCutoff = 500;
 let filterResonance = 1;
 let source: AudioBufferSourceNode;
 let waveChartManager: WaveChartManager;
 
-function play(event: InputEvent): void {
-    const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
-    let samples = oscillator.generateAudioBuffer(+tone, 3);
-    if (filterEnabled) {
-        samples = lowPassFilter.filter(samples, filterCutoff, filterResonance);
-    }
+function playBuffer(samples: Float32Array): void {
     const audioBuffer = audioContext.createBuffer(1, samples.length, audioContext.sampleRate);
     audioBuffer.copyToChannel(samples, 0);
     source = audioContext.createBufferSource();
@@ -30,8 +26,22 @@ function play(event: InputEvent): void {
     waveChartManager.updateChart(samples);
 }
 
-function stopPlaying(): void {
+function playTone(event: InputEvent): void {
+    const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
+    let samples = oscillator.generateAudioBuffer(+tone, 3);
+    if (filterEnabled) {
+        samples = lowPassFilter.filter(samples, filterCutoff, filterResonance);
+    }
+    playBuffer(samples);
+}
+
+function stopPlayingTone(): void {
     source.stop();
+}
+
+function playEffect(): void {
+    const samples = rocketEffect.play(1.5);
+    playBuffer(samples);
 }
 
 function initialize(): void {
@@ -39,9 +49,9 @@ function initialize(): void {
     const keyboardDiv = KeyboardManager.createKeyboard();
     const keys = keyboardDiv.getElementsByTagName("*");
     for (const key of keys) {
-        key.addEventListener("mousedown", play, false);
-        key.addEventListener("mouseup", stopPlaying, false);
-        key.addEventListener("mouseleave", stopPlaying, false);
+        key.addEventListener("mousedown", playTone, false);
+        key.addEventListener("mouseup", stopPlayingTone, false);
+        key.addEventListener("mouseleave", stopPlayingTone, false);
     }
     document.getElementById("sineRadio").addEventListener("change", function () {
         oscillator.waveType = WaveType.Sine;
@@ -57,6 +67,9 @@ function initialize(): void {
     });
     document.getElementById("filterEnabledCheckbox").addEventListener("click", function () {
         filterEnabled = !filterEnabled;
+    });
+    document.getElementById("rocketImg").addEventListener("click", function () {
+        playEffect();
     });
     document.getElementById("cutoffSlider").oninput = function () {
         // @ts-ignore
