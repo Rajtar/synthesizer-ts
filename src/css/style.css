@@ -49,6 +49,22 @@ body {
     transform: scale(0.95, 0.95)
 }
 
+#octaveInput {
+    position: relative;
+    left: 10px;
+    text-align: center;
+    background-color: #263340;
+    border:2px solid #334552;
+    border-radius: 5px;
+    font-family: Verdana;
+    color: #616161;
+    font-size: 20px;
+}
+
+/*input[type=number]::-webkit-inner-spin-button {*/
+/*    opacity: 1;*/
+/*}*/
+
 .radio-container {
     position: relative;
     padding-left: 35px;

@@ -20,15 +20,15 @@ let filterResonance = 1;
 function createAudioScene(): void {
     const waveChartManager = new WaveChartManager((<HTMLCanvasElement>document.getElementById('waveChart')));
     bufferPlayer = new BufferPlayer(waveChartManager);
-    oscillator = new Oscillator(WaveType.Sine, 0.3, bufferPlayer.getSamplingRate());
+    oscillator = new Oscillator(WaveType.Sine, 5, 0.3, bufferPlayer.getSamplingRate());
     lowPassFilter = new LowPassFilter(bufferPlayer.getSamplingRate());
     rocketEffect = new RocketEffect(bufferPlayer.getSamplingRate());
     envelopeGenerator = new EnvelopeGenerator(bufferPlayer.getSamplingRate());
 }
 
 function playTone(event: InputEvent): void {
-    const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
-    let samples = oscillator.generateAudioBuffer(+tone, 3);
+    const noteKey = (<HTMLInputElement>event.target).dataset["noteKey"];
+    let samples = oscillator.generateAudioBuffer(noteKey, 3);
     // if (envelopeGenerator.CurrentStage == EnvelopeStage.Off) {
     //     envelopeGenerator.enterStage(EnvelopeStage.Attack);
     // } else if (envelopeGenerator.CurrentStage == EnvelopeStage.Sustain) {
@@ -96,6 +96,10 @@ function initialize(): void {
         filterResonance = this.value;
         // @ts-ignore
         (<HTMLInputElement>document.getElementById("resonanceSliderLabel")).innerHTML = this.value;
+    }
+    document.getElementById("octaveInput").oninput = function () {
+        // @ts-ignore
+        oscillator.octave = this.value;
     }
 }
 

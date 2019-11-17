@@ -4,16 +4,16 @@ export class KeyboardManager {
 
     static createKeyboard(): HTMLElement {
         const keyboardDiv = document.getElementById("keyboard");
-        for (const noteFrequency of NoteTable.frequencies) {
-            keyboardDiv.appendChild(this.createKey(noteFrequency));
+        for (const key of NoteTable.notes.keys()) {
+            keyboardDiv.appendChild(this.createKey(key));
         }
         return keyboardDiv;
     }
 
-    static createKey(noteFrequency: number): HTMLElement {
+    static createKey(noteKey: string): HTMLElement {
         const keyElement = document.createElement("div");
         keyElement.className = "key";
-        keyElement.dataset["noteFrequency"] = String(noteFrequency);
+        keyElement.dataset["noteKey"] = String(noteKey);
         return keyElement;
     }
 

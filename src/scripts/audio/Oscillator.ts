@@ -1,17 +1,21 @@
 import {WaveType} from "./WaveType";
+import {NoteTable} from "./NoteTable";
 
 export class Oscillator {
     waveType: WaveType;
+    octave: number;
     private readonly volume: number;
     private readonly samplingRate: number;
 
-    constructor(waveType: WaveType, volume: number, samplingRate: number) {
+    constructor(waveType: WaveType, octave: number, volume: number, samplingRate: number) {
+        this.octave = octave;
         this.waveType = waveType;
         this.volume = volume;
         this.samplingRate = samplingRate;
     }
 
-    generateAudioBuffer(tone: number, seconds: number): Float32Array {
+    generateAudioBuffer(key: string, seconds: number): Float32Array {
+        const tone = this.getToneForKey(key);
         const samples = new Float32Array(this.samplingRate * seconds);
         for (let i = 0; i < samples.length; i++) {
             switch (this.waveType) {
@@ -30,6 +34,10 @@ export class Oscillator {
             }
         }
         return samples;
+    }
+
+    private getToneForKey(key: string): number {
+        return +NoteTable.notes.get(key) * Math.pow(2, this.octave);
     }
 
     private sineWaveAt(sampleNumber: number, tone: number): number {
