@@ -3,10 +3,12 @@ import {WaveType} from "./audio/WaveType";
 import {KeyboardManager} from "./ui/KeyboardManager";
 import {WaveChartManager} from "./ui/WaveChartManager";
 import {LowPassFilter} from "./audio/LowPassFilter";
+import {RedNoiseGenerator} from "./audio/RedNoiseGenerator";
 
 const audioContext = new AudioContext();
 const oscillator = new Oscillator(WaveType.Sine, 0.3, audioContext.sampleRate);
 const lowPassFilter = new LowPassFilter(audioContext.sampleRate);
+const noiseGenerator = new RedNoiseGenerator(audioContext.sampleRate);
 let filterEnabled = false;
 let filterCutoff = 500;
 let filterResonance = 1;
