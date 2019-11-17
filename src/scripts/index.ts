@@ -7,16 +7,29 @@ import {LowPassFilter} from "./audio/LowPassFilter";
 import {EnvelopeStage} from "./audio/EnvelopeStage";
 
 const audioContext = new AudioContext();
-const oscillator = new Oscillator(WaveType.Sine, 0.3, audioContext.sampleRate);
-const lowPassFilter = new LowPassFilter(audioContext.sampleRate);
-const envelopeGenerator = new EnvelopeGenerator(audioContext.sampleRate);
+
+import {RocketEffect} from "./audio/RocketEffect";
+import {BufferPlayer} from "./audio/BufferPlayer";
+
+let bufferPlayer: BufferPlayer;
+let oscillator: Oscillator;
+let envelopeGenerator: EnvelopeGenerator;
+let lowPassFilter: LowPassFilter;
+let rocketEffect: RocketEffect;
 let filterEnabled = false;
 let filterCutoff = 500;
 let filterResonance = 1;
-let source: AudioBufferSourceNode;
-let waveChartManager: WaveChartManager;
 
-function play(event: InputEvent): void {
+function createAudioScene(): void {
+    const waveChartManager = new WaveChartManager((<HTMLCanvasElement>document.getElementById('waveChart')));
+    bufferPlayer = new BufferPlayer(waveChartManager);
+    oscillator = new Oscillator(WaveType.Sine, 0.3, bufferPlayer.getSamplingRate());
+    lowPassFilter = new LowPassFilter(bufferPlayer.getSamplingRate());
+    rocketEffect = new RocketEffect(bufferPlayer.getSamplingRate());
+    envelopeGenerator = new EnvelopeGenerator(audioContext.sampleRate);
+}
+
+function playTone(event: InputEvent): void {
     const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
     let samples = oscillator.generateAudioBuffer(+tone, 3);
     // if (envelopeGenerator.CurrentStage == EnvelopeStage.Off) {
@@ -33,30 +46,29 @@ function play(event: InputEvent): void {
     if (filterEnabled) {
         samples = lowPassFilter.filter(samples, filterCutoff, filterResonance);
     }
-    const audioBuffer = audioContext.createBuffer(1, samples.length, audioContext.sampleRate);
-    audioBuffer.copyToChannel(samples, 0);
-    source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    source.start();
-    waveChartManager.updateChart(samples);
+    bufferPlayer.playBuffer(samples);
 }
 
-function stopPlaying(): void {
+function stopPlayingTone(): void {
     if (envelopeGenerator.CurrentStage != EnvelopeStage.Off && envelopeGenerator.CurrentStage != EnvelopeStage.Release) {
         envelopeGenerator.enterStage(EnvelopeStage.Release);
     }
-    source.stop();
+    bufferPlayer.stopPlaying();
+}
+
+function playEffect(): void {
+    const samples = rocketEffect.play(1.5);
+    bufferPlayer.playBuffer(samples);
 }
 
 function initialize(): void {
-    waveChartManager = new WaveChartManager((<HTMLCanvasElement>document.getElementById('waveChart')));
+    createAudioScene();
     const keyboardDiv = KeyboardManager.createKeyboard();
     const keys = keyboardDiv.getElementsByTagName("*");
     for (const key of keys) {
-        key.addEventListener("mousedown", play, false);
-        key.addEventListener("mouseup", stopPlaying, false);
-        key.addEventListener("mouseleave", stopPlaying, false);
+        key.addEventListener("mousedown", playTone, false);
+        key.addEventListener("mouseup", stopPlayingTone, false);
+        key.addEventListener("mouseleave", stopPlayingTone, false);
     }
     document.getElementById("sineRadio").addEventListener("change", function () {
         oscillator.waveType = WaveType.Sine;
@@ -72,6 +84,9 @@ function initialize(): void {
     });
     document.getElementById("filterEnabledCheckbox").addEventListener("click", function () {
         filterEnabled = !filterEnabled;
+    });
+    document.getElementById("rocketImg").addEventListener("click", function () {
+        playEffect();
     });
     document.getElementById("cutoffSlider").oninput = function () {
         // @ts-ignore

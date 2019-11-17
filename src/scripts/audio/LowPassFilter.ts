@@ -26,6 +26,7 @@ export class LowPassFilter {
             } else {
                 output[i] = (a0 * input[i]) + (a1 *  input[i-1]) + (a2 * input[i-2]) - (b1 *  output[i-1]) - (b2 * output[i-2]);
             }
+            cutoff+=10;
         }
         return output;
     }
