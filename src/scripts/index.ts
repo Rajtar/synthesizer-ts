@@ -3,27 +3,23 @@ import {WaveType} from "./audio/WaveType";
 import {KeyboardManager} from "./ui/KeyboardManager";
 import {WaveChartManager} from "./ui/WaveChartManager";
 import {LowPassFilter} from "./audio/LowPassFilter";
-import {RedNoiseGenerator} from "./audio/RedNoiseGenerator";
 import {RocketEffect} from "./audio/RocketEffect";
+import {BufferPlayer} from "./audio/BufferPlayer";
 
-const audioContext = new AudioContext();
-const oscillator = new Oscillator(WaveType.Sine, 0.3, audioContext.sampleRate);
-const lowPassFilter = new LowPassFilter(audioContext.sampleRate);
-const rocketEffect = new RocketEffect(audioContext.sampleRate);
+let bufferPlayer: BufferPlayer;
+let oscillator: Oscillator;
+let lowPassFilter: LowPassFilter;
+let rocketEffect: RocketEffect;
 let filterEnabled = false;
 let filterCutoff = 500;
 let filterResonance = 1;
-let source: AudioBufferSourceNode;
-let waveChartManager: WaveChartManager;
 
-function playBuffer(samples: Float32Array): void {
-    const audioBuffer = audioContext.createBuffer(1, samples.length, audioContext.sampleRate);
-    audioBuffer.copyToChannel(samples, 0);
-    source = audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(audioContext.destination);
-    source.start();
-    waveChartManager.updateChart(samples);
+function createAudioScene(): void {
+    const waveChartManager = new WaveChartManager((<HTMLCanvasElement>document.getElementById('waveChart')));
+    bufferPlayer = new BufferPlayer(waveChartManager);
+    oscillator = new Oscillator(WaveType.Sine, 0.3, bufferPlayer.getSamplingRate());
+    lowPassFilter = new LowPassFilter(bufferPlayer.getSamplingRate());
+    rocketEffect = new RocketEffect(bufferPlayer.getSamplingRate());
 }
 
 function playTone(event: InputEvent): void {
@@ -32,20 +28,20 @@ function playTone(event: InputEvent): void {
     if (filterEnabled) {
         samples = lowPassFilter.filter(samples, filterCutoff, filterResonance);
     }
-    playBuffer(samples);
+    bufferPlayer.playBuffer(samples);
 }
 
 function stopPlayingTone(): void {
-    source.stop();
+    bufferPlayer.stopPlaying();
 }
 
 function playEffect(): void {
     const samples = rocketEffect.play(1.5);
-    playBuffer(samples);
+    bufferPlayer.playBuffer(samples);
 }
 
 function initialize(): void {
-    waveChartManager = new WaveChartManager((<HTMLCanvasElement>document.getElementById('waveChart')));
+    createAudioScene();
     const keyboardDiv = KeyboardManager.createKeyboard();
     const keys = keyboardDiv.getElementsByTagName("*");
     for (const key of keys) {
