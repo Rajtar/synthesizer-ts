@@ -1,12 +1,15 @@
 import {Oscillator} from "./audio/Oscillator";
+import {EnvelopeGenerator} from "./audio/EnvelopeGenerator";
 import {WaveType} from "./audio/WaveType";
 import {KeyboardManager} from "./ui/KeyboardManager";
 import {WaveChartManager} from "./ui/WaveChartManager";
 import {LowPassFilter} from "./audio/LowPassFilter";
+import {EnvelopeStage} from "./audio/EnvelopeStage";
 
 const audioContext = new AudioContext();
 const oscillator = new Oscillator(WaveType.Sine, 0.3, audioContext.sampleRate);
 const lowPassFilter = new LowPassFilter(audioContext.sampleRate);
+const envelopeGenerator = new EnvelopeGenerator(audioContext.sampleRate);
 let filterEnabled = false;
 let filterCutoff = 500;
 let filterResonance = 1;
@@ -16,6 +19,17 @@ let waveChartManager: WaveChartManager;
 function play(event: InputEvent): void {
     const tone = (<HTMLInputElement>event.target).dataset["noteFrequency"];
     let samples = oscillator.generateAudioBuffer(+tone, 3);
+    // if (envelopeGenerator.CurrentStage == EnvelopeStage.Off) {
+    //     envelopeGenerator.enterStage(EnvelopeStage.Attack);
+    // } else if (envelopeGenerator.CurrentStage == EnvelopeStage.Sustain) {
+    //     envelopeGenerator.enterStage(EnvelopeStage.Release);
+    // }
+
+    this.envelopeGenerator.enterStage(EnvelopeStage.Attack);
+    for (const i in samples) {
+        samples[i] *= envelopeGenerator.nextSample();
+    }
+
     if (filterEnabled) {
         samples = lowPassFilter.filter(samples, filterCutoff, filterResonance);
     }
@@ -29,6 +43,9 @@ function play(event: InputEvent): void {
 }
 
 function stopPlaying(): void {
+    if (envelopeGenerator.CurrentStage != EnvelopeStage.Off && envelopeGenerator.CurrentStage != EnvelopeStage.Release) {
+        envelopeGenerator.enterStage(EnvelopeStage.Release);
+    }
     source.stop();
 }
 
