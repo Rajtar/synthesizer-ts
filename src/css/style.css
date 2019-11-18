@@ -256,3 +256,30 @@ body {
 #rocketImg:active {
     transform: scale(0.75, 0.75)
 }
+
+.volume {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    font-family: Verdana;
+    color: #616161;
+    background-color: #263340;
+    border-radius: 10px;
+    width: 175px;
+    height: 25px;
+    vertical-align: center;
+    text-align: center;
+}
+
+#masterVolumeSlider {
+    display: inline-block;
+    margin : 0 auto;
+    vertical-align: middle;
+}
+
+#volumeImg {
+    display: inline-block;
+    margin : 0 auto;
+    vertical-align: middle;
+    filter: invert(22%) sepia(28%) saturate(507%) hue-rotate(162deg) brightness(97%) contrast(89%);
+}
