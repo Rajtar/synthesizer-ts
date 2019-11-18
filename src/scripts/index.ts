@@ -20,10 +20,10 @@ let filterCutoff = 500;
 let filterResonance = 1;
 let masterVolume = 0.5;
 
-let attack = 1;
-let decay = 0.5;
-let sustain = 3;
-let release = 1;
+const attack = 3;
+const decay = 2;
+const sustain = 8;
+const release = 2;
 
 function createAudioScene(): void {
     const waveChartManager = new WaveChartManager((<HTMLCanvasElement>document.getElementById('waveChart')));
@@ -39,16 +39,6 @@ function playTone(event: InputEvent): void {
     const noteKey = (<HTMLInputElement>event.target).dataset["noteKey"];
     const samples1 = oscillator.generateAudioBuffer(noteKey, 3);
     const samples2 = oscillator2.generateAudioBuffer(noteKey, 3);
-    // if (envelopeGenerator.CurrentStage == EnvelopeStage.Off) {
-    //     envelopeGenerator.enterStage(EnvelopeStage.Attack);
-    // } else if (envelopeGenerator.CurrentStage == EnvelopeStage.Sustain) {
-    //     envelopeGenerator.enterStage(EnvelopeStage.Release);
-    // }
-
-    // this.envelopeGenerator.enterStage(EnvelopeStage.Attack);
-    // for (const i in samples) {
-    //     samples[i] *= envelopeGenerator.nextSample();
-    // }
     let mixedSamples = Mixer.mixTracks(masterVolume, samples1, samples2);
     if (filterEnabled) {
         mixedSamples = lowPassFilter.filter(mixedSamples, filterCutoff, filterResonance);
@@ -57,9 +47,6 @@ function playTone(event: InputEvent): void {
 }
 
 function stopPlayingTone(): void {
-    // if (envelopeGenerator.CurrentStage != EnvelopeStage.Off && envelopeGenerator.CurrentStage != EnvelopeStage.Release) {
-    //     envelopeGenerator.enterStage(EnvelopeStage.Release);
-    // }
     bufferPlayer.stopPlaying();
 }
 
@@ -107,35 +94,6 @@ function initialize(): void {
         // @ts-ignore
         (<HTMLInputElement>document.getElementById("resonanceSliderLabel")).innerHTML = this.value;
     }
-
-    document.getElementById("attackSlider").oninput = function () {
-        // @ts-ignore
-        attack = this.value;
-        envelopeGenerator.setAttackValue(attack);
-        // @ts-ignore
-        (<HTMLInputElement>document.getElementById("attackSliderLabel")).innerHTML = this.value;
-    }
-    document.getElementById("decaySlider").oninput = function () {
-        // @ts-ignore
-        decay = this.value;
-        envelopeGenerator.setDecayValue(decay);
-        // @ts-ignore
-        (<HTMLInputElement>document.getElementById("decaySliderLabel")).innerHTML = this.value;
-    }
-    document.getElementById("sustainSlider").oninput = function () {
-        // @ts-ignore
-        sustain = this.value;
-        // @ts-ignore
-        (<HTMLInputElement>document.getElementById("sustainSliderLabel")).innerHTML = this.value;
-    }
-    document.getElementById("releaseSlider").oninput = function () {
-        // @ts-ignore
-        release = this.value;
-        envelopeGenerator.setReleaseValue(release);
-        // @ts-ignore
-        (<HTMLInputElement>document.getElementById("releaseSliderLabel")).innerHTML = this.value;
-    }
-
     document.getElementById("octaveInput").oninput = function () {
         // @ts-ignore
         oscillator.octave = this.value;
