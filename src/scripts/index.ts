@@ -18,6 +18,7 @@ let rocketEffect: RocketEffect;
 let filterEnabled = false;
 let filterCutoff = 500;
 let filterResonance = 1;
+let masterVolume = 0.5;
 
 function createAudioScene(): void {
     const waveChartManager = new WaveChartManager((<HTMLCanvasElement>document.getElementById('waveChart')));
@@ -43,7 +44,7 @@ function playTone(event: InputEvent): void {
     // for (const i in samples) {
     //     samples[i] *= envelopeGenerator.nextSample();
     // }
-    let mixedSamples = Mixer.mixTracks(0.5, samples1, samples2);
+    let mixedSamples = Mixer.mixTracks(masterVolume, samples1, samples2);
     if (filterEnabled) {
         mixedSamples = lowPassFilter.filter(mixedSamples, filterCutoff, filterResonance);
     }
@@ -104,6 +105,10 @@ function initialize(): void {
     document.getElementById("octaveInput").oninput = function () {
         // @ts-ignore
         oscillator.octave = this.value;
+    }
+    document.getElementById("masterVolumeSlider").oninput = function () {
+        // @ts-ignore
+        masterVolume = this.value;
     }
 }
 
