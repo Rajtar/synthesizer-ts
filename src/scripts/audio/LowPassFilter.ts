@@ -29,7 +29,7 @@ export class LowPassFilter {
         return output;
     }
 
-    filterWithIteration(input: Float32Array, cutoff: number, resonance: number, cutoffIncrement: number): Float32Array {
+    filterWithIteration(input: Float32Array, cutoff: number, resonance: number, cutoffIncrement: number, peakRatio: number): Float32Array {
         const output = new Float32Array(input.length);
         for (let i = 0; i < output.length; i++) {
             const s = Math.sin(2 * Math.PI * cutoff / this.samplingRate);
@@ -49,7 +49,11 @@ export class LowPassFilter {
             } else {
                 output[i] = (a0 * input[i]) + (a1 *  input[i-1]) + (a2 * input[i-2]) - (b1 *  output[i-1]) - (b2 * output[i-2]);
             }
-            cutoff += cutoffIncrement;
+            if(i < output.length * peakRatio){
+                cutoff += cutoffIncrement;
+            } else {
+                cutoff -= cutoffIncrement;
+            }
         }
         return output;
     }
