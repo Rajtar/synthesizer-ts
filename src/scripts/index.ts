@@ -54,7 +54,7 @@ function stopPlayingTone(): void {
 }
 
 function playEffect(): void {
-    const samples = rocketEffect.play(5);
+    const samples = rocketEffect.play(15);
     bufferPlayer.playBuffer(samples);
 }
 

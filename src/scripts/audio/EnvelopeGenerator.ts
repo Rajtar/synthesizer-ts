@@ -18,7 +18,7 @@ export class EnvelopeGenerator {
         this.multiplier = 1.0;
         this.currentSampleIndex = 0;
         this.nextStageSampleIndex = 0;
-        this.stageValue = [0.0, 1, 3, 1.0, 1.0];
+        this.stageValue = [0.0, 5, 8, 1.0, 1.0];
     }
 
     enterStage(newStage: EnvelopeStage): void {
