@@ -10,7 +10,7 @@ export class EnvelopeGenerator {
     private currentSampleIndex: number;
     private nextStageSampleIndex: number;
 
-    constructor(samplingRate: number) {
+    constructor(samplingRate: number, attackValue: number, decayValue: number, releaseValue: number) {
         this.samplingRate = samplingRate;
         this.CurrentStage = EnvelopeStage.Off;
         this.MinimumLevel = 0.0001;
@@ -18,7 +18,7 @@ export class EnvelopeGenerator {
         this.multiplier = 1.0;
         this.currentSampleIndex = 0;
         this.nextStageSampleIndex = 0;
-        this.stageValue = [0.0, 1, 3, 1.0, 1.0];
+        this.stageValue = [0.0, attackValue, decayValue, 1.0, releaseValue];
     }
 
     enterStage(newStage: EnvelopeStage): void {
@@ -54,6 +54,18 @@ export class EnvelopeGenerator {
             default:
                 break;
         }
+    }
+
+    setAttackValue(newValue: number): void {
+        this.stageValue[1] = newValue;
+    }
+
+    setDecayValue(newValue: number): void {
+        this.stageValue[2] = newValue;
+    }
+
+    setReleaseValue(newValue: number): void {
+        this.stageValue[4] = newValue;
     }
 
     nextSample(): number {

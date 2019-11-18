@@ -17,13 +17,18 @@ let filterEnabled = false;
 let filterCutoff = 500;
 let filterResonance = 1;
 
+let attack = 1;
+let decay = 0.5;
+let sustain = 3;
+let release = 1;
+
 function createAudioScene(): void {
     const waveChartManager = new WaveChartManager((<HTMLCanvasElement>document.getElementById('waveChart')));
     bufferPlayer = new BufferPlayer(waveChartManager);
     oscillator = new Oscillator(WaveType.Sine, 5, 0.3, bufferPlayer.getSamplingRate());
     lowPassFilter = new LowPassFilter(bufferPlayer.getSamplingRate());
-    rocketEffect = new RocketEffect(bufferPlayer.getSamplingRate());
-    envelopeGenerator = new EnvelopeGenerator(bufferPlayer.getSamplingRate());
+    envelopeGenerator = new EnvelopeGenerator(bufferPlayer.getSamplingRate(), attack, decay, release);
+    rocketEffect = new RocketEffect(bufferPlayer.getSamplingRate(), envelopeGenerator);
 }
 
 function playTone(event: InputEvent): void {
@@ -54,7 +59,7 @@ function stopPlayingTone(): void {
 }
 
 function playEffect(): void {
-    const samples = rocketEffect.play(5);
+    const samples = rocketEffect.play(attack + decay + sustain + release);
     bufferPlayer.playBuffer(samples);
 }
 
@@ -97,6 +102,35 @@ function initialize(): void {
         // @ts-ignore
         (<HTMLInputElement>document.getElementById("resonanceSliderLabel")).innerHTML = this.value;
     }
+
+    document.getElementById("attackSlider").oninput = function () {
+        // @ts-ignore
+        attack = this.value;
+        envelopeGenerator.setAttackValue(attack);
+        // @ts-ignore
+        (<HTMLInputElement>document.getElementById("attackSliderLabel")).innerHTML = this.value;
+    }
+    document.getElementById("decaySlider").oninput = function () {
+        // @ts-ignore
+        decay = this.value;
+        envelopeGenerator.setDecayValue(decay);
+        // @ts-ignore
+        (<HTMLInputElement>document.getElementById("decaySliderLabel")).innerHTML = this.value;
+    }
+    document.getElementById("sustainSlider").oninput = function () {
+        // @ts-ignore
+        sustain = this.value;
+        // @ts-ignore
+        (<HTMLInputElement>document.getElementById("sustainSliderLabel")).innerHTML = this.value;
+    }
+    document.getElementById("releaseSlider").oninput = function () {
+        // @ts-ignore
+        release = this.value;
+        envelopeGenerator.setReleaseValue(release);
+        // @ts-ignore
+        (<HTMLInputElement>document.getElementById("releaseSliderLabel")).innerHTML = this.value;
+    }
+
     document.getElementById("octaveInput").oninput = function () {
         // @ts-ignore
         oscillator.octave = this.value;

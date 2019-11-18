@@ -7,10 +7,10 @@ export class RocketEffect {
     private readonly noiseGenerator: RedNoiseGenerator;
     private readonly envelopeGenerator: EnvelopeGenerator;
 
-    constructor(samplingRate: number) {
+    constructor(samplingRate: number, envelopeGenerator: EnvelopeGenerator) {
         this.samplingRate = samplingRate;
         this.noiseGenerator = new RedNoiseGenerator(samplingRate);
-        this.envelopeGenerator = new EnvelopeGenerator(samplingRate);
+        this.envelopeGenerator = envelopeGenerator;
     }
 
     play(seconds: number): Float32Array {
