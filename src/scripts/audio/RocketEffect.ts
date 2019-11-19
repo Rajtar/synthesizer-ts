@@ -23,6 +23,14 @@ export class RocketEffect {
         for (const i in samples) {
             samples[i] *= this.envelopeGenerator.nextSample();
         }
-        return this.filter.filterWithIteration(samples, 1, 1.5, 0.0015, 0.5);
+        const filtered = this.filter.filterWithIteration(samples, 1, 1.5, 0.0015, 0.5);
+        let envelopeMultiplier = 1;
+        for (let i = Math.floor(filtered.length * 0.75); i < filtered.length; i++) {
+            if (envelopeMultiplier > 0) {
+                envelopeMultiplier -= 0.000002;
+            }
+            filtered[i] *= envelopeMultiplier;
+        }
+        return filtered.slice(0, filtered.length - 100000);
     }
 }

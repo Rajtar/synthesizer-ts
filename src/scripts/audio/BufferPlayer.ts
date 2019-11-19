@@ -21,7 +21,7 @@ export class BufferPlayer {
     }
 
     stopPlaying(): void {
-        this.source.stop();
+        // this.source.stop();
     }
 
     getSamplingRate(): number {

@@ -32,8 +32,8 @@ function createAudioScene(): void {
 
 function playTone(event: InputEvent): void {
     const noteKey = (<HTMLInputElement>event.target).dataset["noteKey"];
-    const samples1 = oscillator.generateAudioBuffer(noteKey, 3);
-    const samples2 = oscillator2.generateAudioBuffer(noteKey, 3);
+    const samples1 = oscillator.generateAudioBuffer(noteKey, 0.5);
+    const samples2 = oscillator2.generateAudioBuffer(noteKey, 0.5);
     // if (envelopeGenerator.CurrentStage == EnvelopeStage.Off) {
     //     envelopeGenerator.enterStage(EnvelopeStage.Attack);
     // } else if (envelopeGenerator.CurrentStage == EnvelopeStage.Sustain) {
